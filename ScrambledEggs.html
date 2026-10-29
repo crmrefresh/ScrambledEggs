@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ScrambledEggs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000000; --white:#FFFFFF; --grey:#808080; --light:#F4F4F5;
+  --blue:#1C53E5; --lightblue:#E9EFFD; --rule:rgba(0,0,0,.12);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--white);color:var(--black);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.5}
+.label{font-family:'Antonio',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:13px;font-weight:600}
+.topbar{background:var(--black);color:var(--white)}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;padding-bottom:12px}
+.topbar .muted{color:var(--grey)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--rule)}
+.eyebrow{color:var(--blue)}
+h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(48px,9vw,84px);line-height:1;margin:10px 0 18px;letter-spacing:-.01em}
+h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(28px,4vw,36px);line-height:1.15;margin:6px 0 8px}
+h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;margin:36px 0 4px}
+.lede{color:var(--grey);max-width:680px;font-size:18px;margin:0}
+.sub{color:var(--grey);margin:0;max-width:720px}
+.step{padding:44px 0;border-bottom:1px solid var(--rule)}
+.hidden{display:none !important}
+
+.drop{margin-top:22px;border:2px dashed var(--grey);border-radius:14px;padding:52px 24px;text-align:center;background:var(--light);cursor:pointer;transition:background .15s,border-color .15s}
+.drop:hover,.drop:focus-visible,.drop.over{border-color:var(--blue);background:var(--lightblue);outline:none}
+.drop-title{font-family:'DM Serif Display',serif;font-size:26px;margin:0 0 4px}
+.drop-sub{color:var(--grey);margin:0;font-size:15px}
+
+.btn{font-family:'Inter',sans-serif;font-weight:600;font-size:15px;border-radius:8px;padding:12px 20px;border:1.5px solid var(--black);background:var(--white);color:var(--black);cursor:pointer;transition:opacity .15s}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--white)}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:24px}
+
+.notice{margin-top:16px;padding:12px 16px;border-left:4px solid var(--black);background:var(--light);font-size:15px}
+.notice.blue{border-left-color:var(--blue);background:var(--lightblue)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
+.stat{background:var(--light);border-radius:12px;padding:16px 20px}
+.stat .num{font-family:'DM Serif Display',serif;font-size:40px;line-height:1.1}
+.stat .label{color:var(--grey);font-size:12px}
+.stat.accent{background:var(--blue);color:var(--white)}
+.stat.accent .label{color:var(--lightblue)}
+
+.grid-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:22px}
+.card{background:var(--light);border-radius:12px;padding:18px 20px}
+.card .label{color:var(--blue);margin-bottom:6px}
+.map-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--rule)}
+.map-field{font-family:'Inter',sans-serif;font-size:14px;font-weight:500;display:flex;align-items:center;white-space:nowrap}
+.map-row.missing .map-field{color:var(--grey)}
+.map-row select{font-family:'Inter',sans-serif;font-size:13px;width:58%;min-width:0;padding:6px 8px;border-radius:6px;border:1px solid var(--rule);background:var(--white);color:var(--black)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;background:transparent;border:1.5px solid var(--grey);flex:none}
+.dot.ok{background:var(--blue);border-color:var(--blue)}
+
+.options{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.opt input{margin-top:4px;accent-color:var(--blue);width:16px;height:16px}
+
+.table-wrap{overflow:auto;border:1px solid var(--rule);border-radius:12px;margin-top:14px;max-height:520px}
+table{border-collapse:collapse;font-family:'Inter',sans-serif;font-size:13px;width:100%}
+th{position:sticky;top:0;background:var(--light);text-align:left;font-weight:600;padding:10px 12px;white-space:nowrap;border-bottom:1px solid var(--rule);z-index:1}
+td{padding:8px 12px;border-bottom:1px solid var(--rule);white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
+tr:last-child td{border-bottom:none}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{font-family:'Antonio',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--lightblue);color:var(--blue)}
+.tag.off{background:var(--light);color:var(--grey)}
+tr.o2 td{background:#FAFBFF}
+
+.checks{margin-top:14px;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.check{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:14px 20px;border-top:1px solid var(--rule)}
+.check:first-child{border-top:none}
+.badge{font-family:'Antonio',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:600;padding:3px 8px;border-radius:4px;text-align:center;align-self:start}
+.badge.pass{background:var(--lightblue);color:var(--blue)}
+.badge.flag{background:var(--black);color:var(--white)}
+.badge.info{background:var(--light);color:var(--grey)}
+.check-title{font-family:'Inter',sans-serif;font-weight:600;font-size:15px}
+.check-detail{color:var(--grey);font-size:14px;margin-top:2px}
+.examples{font-family:'Inter',sans-serif;font-size:12px;background:var(--light);border-radius:6px;padding:8px 10px;margin-top:8px;word-break:break-word}
+
+footer{padding:32px 0 48px;color:var(--grey);font-size:14px}
+
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .hero{padding:40px 0 32px}
+  .check{grid-template-columns:1fr;gap:6px}
+  .badge{justify-self:start}
+  .map-row select{width:55%}
+  .topbar .muted{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="label">CRM Refresh</span>
+    <span class="label muted">Owner 1 &amp; 2 Formatter</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="label eyebrow">Lead list tool</div>
+      <h1>ScrambledEggs</h1>
+      <p class="lede">Split Owner 1 and Owner 2 onto their own rows, clean the formatting, and export a CRM-ready lead list. Your file is processed in this browser and never uploaded anywhere.</p>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="step">
+    <div class="wrap">
+      <div class="label eyebrow">Step 1</div>
+      <h2>Upload the property/owner export</h2>
+      <div id="drop" class="drop" tabindex="0" role="button" aria-label="Choose a CSV file">
+        <p class="drop-title">Drop a CSV here</p>
+        <p class="drop-sub">or click to choose a file</p>
+      </div>
+      <input id="file" type="file" accept=".csv,text/csv" class="hidden">
+      <div id="loadMsg"></div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step2" class="step hidden">
+    <div class="wrap">
+      <div class="label eyebrow">Step 2</div>
+      <h2>Confirm the columns</h2>
+      <p class="sub">Recognized headers are matched automatically. Check anything marked "Not in file" and pick the right column if it exists under a different name.</p>
+      <div id="fileStats" class="stats"></div>
+      <div id="loadFlags"></div>
+      <div id="mapGrid" class="grid-map"></div>
+
+      <div class="options">
+        <label class="opt"><input type="checkbox" id="optShielded" checked>
+          <span><strong>Exclude SHIELDED records</strong> <span id="shieldCount" class="sub" style="display:inline"></span><br>
+          <span class="sub">Address-suppressed rows have no usable street address and generally should not be imported.</span></span>
+        </label>
+      </div>
+
+      <h3>Source columns</h3>
+      <p class="sub">Everything in the file, with how it will be used. Columns marked "Not used" are left out of the output.</p>
+      <div id="colTable" class="table-wrap"></div>
+
+      <div class="actions">
+        <button id="runBtn" class="btn primary">Scramble it</button>
+        <span id="runMsg" class="sub"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="step3" class="step hidden">
+    <div class="wrap">
+      <div class="label eyebrow">Step 3</div>
+      <h2>Review and download</h2>
+      <div id="resultStats" class="stats"></div>
+      <div class="actions">
+        <button id="dlBtn" class="btn primary">Download CSV</button>
+        <button id="resetBtn" class="btn">Start over</button>
+      </div>
+
+      <h3>Validation</h3>
+      <p class="sub">Flags are worth a look before import. Nothing flagged has been changed or hidden.</p>
+      <div id="checks" class="checks"></div>
+
+      <h3>Preview</h3>
+      <p id="previewNote" class="sub"></p>
+      <div id="preview" class="table-wrap"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">ScrambledEggs by CRM Refresh. Runs entirely in your browser.</div>
+</footer>
+
+<script>
+/* =========================================================
+   CORE LOGIC (no DOM) - safe to test outside the browser
+   ========================================================= */
+
+const OUT_COLS = [
+  ['First Name','first'],['Last Name','last'],['Email Address','email'],
+  ['Mobile Phone 1','p1'],['Mobile Phone 2','p2'],['Mobile Phone 3','p3'],
+  ['Owner Tag','tag'],['Alternate Owner','alt'],['Groups','groups'],
+  ['Home Address Line 1','line1'],['Home Address Line 2','line2'],
+  ['Home Address City','city'],['Home Address State','state'],
+  ['Home Address Zip','zip'],['File Tag','fileTag']
+];
+
+function normalize(s){ return String(s).toLowerCase().replace(/[^a-z0-9]/g,''); }
+
+function ownerFields(n){
+  const pre = [`owner${n}`, `o${n}`];
+  const mk = suf => pre.flatMap(p => suf.map(s => p + s));
+  const generic = n === 1;
+  const f = [
+    {key:`o${n}First`, label:'First Name', aliases: mk(['firstname','first']).concat(generic?['firstname','ownerfirstname']:[])},
+    {key:`o${n}Last`,  label:'Last Name',  aliases: mk(['lastname','last']).concat(generic?['lastname','ownerlastname']:[])},
+    {key:`o${n}Full`,  label:'Full Name',  aliases: mk(['fullname','name','full']).concat(generic?['fullname','ownername','ownerfullname']:[])},
+    {key:`o${n}Email`, label:'Email',      aliases: mk(['email','emailaddress','email1']).concat(generic?['email','emailaddress','owneremail']:[])},
+  ];
+  for (let k = 1; k <= 3; k++){
+    const suf = [`phone${k}`,`mobile${k}`,`mobilephone${k}`,`cell${k}`,`cellphone${k}`,`phonenumber${k}`,`wireless${k}`];
+    if (k === 1) suf.push('phone','mobile','mobilephone','cell','cellphone','phonenumber');
+    f.push({key:`o${n}Phone${k}`, label:`Phone ${k}`,
+      aliases: mk(suf).concat(generic?[`phone${k}`,`mobilephone${k}`,`ownerphone${k}`]:[])});
+  }
+  f.forEach(x => x.group = `Owner ${n}`);
+  return f;
+}
+
+const FIELDS = [
+  {key:'address',      label:'Property Address', required:true, aliases:['property address','address','site address','property street address','street address','property full address']},
+  {key:'unitType',     label:'Unit Type',     aliases:['unit type','property unit type','unit designator']},
+  {key:'unitNumber',   label:'Unit Number',   aliases:['unit number','unit #','unit no','unit num','property unit number','unit']},
+  {key:'city',         label:'City',          aliases:['city','property city','site city']},
+  {key:'state',        label:'State',         aliases:['state','property state','site state']},
+  {key:'zip',          label:'ZIP 5',         aliases:['zip 5','zip5','zip','zip code','zipcode','property zip','property zip 5','site zip','postal code']},
+  {key:'houseNumber',  label:'House Number',  aliases:['house number','house #','house no','street number','property house number']},
+  {key:'street',       label:'Street',        aliases:['street','street name','property street']},
+  {key:'streetSuffix', label:'Street Suffix', aliases:['street suffix','suffix','property street suffix']},
+].map(f => Object.assign(f, {group:'Property'}))
+ .concat(ownerFields(1), ownerFields(2));
+
+function autoMap(headers){
+  const norm = headers.map(normalize);
+  const used = new Set();
+  const m = {};
+  FIELDS.forEach(f => {
+    m[f.key] = -1;
+    for (const a of f.aliases.map(normalize)){
+      const i = norm.findIndex((h, j) => h === a && !used.has(j));
+      if (i >= 0){ m[f.key] = i; used.add(i); break; }
+    }
+  });
+  return m;
+}
+
+function parseCSV(text){
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const rows = []; let row = []; let f = ''; let q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){
+      if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if (c === '"') q = true;
+    else if (c === ','){ row.push(f); f = ''; }
+    else if (c === '\n'){ row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c === '\r'){ /* handled by \n */ }
+    else f += c;
+  }
+  if (f !== '' || row.length){ row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(v => v.trim() !== ''));
+}
+
+function csvCell(v){
+  v = v == null ? '' : String(v);
+  return /[",\r\n]|^\s|\s$/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+}
+function toCSV(out){
+  const lines = [OUT_COLS.map(c => csvCell(c[0])).join(',')];
+  out.forEach(r => lines.push(OUT_COLS.map(c => csvCell(r[c[1]])).join(',')));
+  return lines.join('\r\n');
+}
+
+/* ---------- formatting ---------- */
+const UPPER_WORDS = new Set(['LLC','LP','LLP','PLLC','PC','DBA','II','III','IV','NE','NW','SE','SW','PO','USA']);
+
+function capPart(p, afterApostrophe){
+  const lower = p.toLowerCase();
+  if (afterApostrophe && lower.length === 1) return lower;         // Smith's, not Smith'S
+  if (/^mc[a-z]{2,}$/.test(lower)) return 'Mc' + lower[2].toUpperCase() + lower.slice(3);
+  return lower.replace(/[a-z]/, ch => ch.toUpperCase());
+}
+
+function caseWord(w){
+  if (!w) return w;
+  const bare = w.toUpperCase().replace(/[.,]/g,'');
+  if (UPPER_WORDS.has(bare)) return w.toUpperCase();
+  if (/^\d+(st|nd|rd|th)$/i.test(w)) return w.replace(/[A-Za-z]+$/, s => s.toLowerCase()); // 10th, 3rd
+  if (/^\d+$/.test(w)) return w;                                                      // pure numbers
+  if (/\d/.test(w) && /^[A-Za-z0-9#\-\/]+$/.test(w)) return w.toUpperCase();          // unit codes T2, G-11, 12B
+  const parts = w.split(/([-\/'])/);
+  return parts.map((p, i) => (p === '-' || p === '/' || p === "'") ? p : capPart(p, parts[i-1] === "'")).join('');
+}
+
+function properCase(s){
+  s = String(s || '').trim().replace(/\s+/g,' ');
+  return s ? s.split(' ').map(caseWord).join(' ') : '';
+}
+
+function cleanPhone(v){
+  let d = String(v || '').replace(/\D/g,'');
+  if (d.length === 11 && d[0] === '1') d = d.slice(1);
+  if (d.length === 10) return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;
+  return d; // leave the extracted digits rather than dropping data
+}
+
+function cleanZip(v){
+  v = String(v || '').trim();
+  const m = v.match(/^(\d{5})(-?\d{4})?$/);
+  return m ? m[1] : v;
+}
+
+/* ---------- unit strip ---------- */
+const UNIT_TOKENS = ['APARTMENT','BUILDING','SUITE','FLOOR','SPACE','UNIT','TRLR','DEPT','BLDG','ROOM','APT','STE','SPC','LOT','RM','FL','PH','NO','#'];
+function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+function stripUnit(addr, unitType, unitNum){
+  const toks = new Set(UNIT_TOKENS);
+  if (unitType) toks.add(unitType.toUpperCase().replace(/\s+/g,' '));
+  const alt = [...toks].sort((a,b) => b.length - a.length).map(escRe).join('|');
+  const re = new RegExp(`\\s+(?:(?:${alt})\\.?\\s*)?#?\\s*${escRe(unitNum)}\\s*$`, 'i');
+  if (!re.test(addr)) return {value:addr, changed:false, skipped:false};
+  const v = addr.replace(re,'').replace(/[\s,]+$/,'');
+  if (v.split(/\s+/).filter(Boolean).length < 2) return {value:addr, changed:false, skipped:true};
+  return {value:v, changed:true, skipped:false};
+}
+
+/* ---------- main pipeline ---------- */
+function processRows(headers, rows, mapping, opts){
+  opts = opts || {};
+  const g = (r, k) => mapping[k] >= 0 ? String(r[mapping[k]] == null ? '' : r[mapping[k]]).trim() : '';
+  const out = [];
+  let shielded = 0, excluded = 0, included = 0, twoOwner = 0;
+  let stripped = 0, stripSkipped = 0, fallbacks = 0;
+  let srcPhones = 0, srcEmails = 0;
+  const phoneLens = {};
+
+  const buildOwner = (r, n) => {
+    const first = properCase(g(r, `o${n}First`));
+    const last  = properCase(g(r, `o${n}Last`));
+    const fullRaw = g(r, `o${n}Full`);
+    const full  = fullRaw ? properCase(fullRaw) : [first, last].filter(Boolean).join(' ');
+    const emailRaw = g(r, `o${n}Email`);
+    if (emailRaw) srcEmails++;
+    const email = emailRaw.toLowerCase().replace(/\s+/g,'');
+    const phones = [1,2,3].map(k => {
+      const raw = g(r, `o${n}Phone${k}`);
+      if (raw){
+        const len = raw.replace(/\D/g,'').length;
+        const key = len === 0 ? 'text only (no digits)' : `${len} digits`;
+        phoneLens[key] = (phoneLens[key] || 0) + 1;
+        if (len > 0) srcPhones++;
+      }
+      return cleanPhone(raw);
+    });
+    const hasData = [first, last, full, email].concat(phones).some(Boolean);
+    return {first, last, full, email, phones, hasData};
+  };
+
+  const collator = new Intl.Collator(undefined, {numeric:true, sensitivity:'base'});
+
+  rows.forEach(r => {
+    const addrRaw = g(r, 'address').replace(/\s+/g,' ');
+    const isShielded = /shielded/i.test(addrRaw);
+    if (isShielded) shielded++;
+    if (isShielded && opts.excludeShielded){ excluded++; return; }
+    included++;
+
+    const unitType = g(r, 'unitType'), unitNum = g(r, 'unitNumber');
+    let line1 = addrRaw;
+    if (unitNum && line1){
+      const res = stripUnit(line1, unitType, unitNum);
+      if (res.changed) stripped++;
+      if (res.skipped) stripSkipped++;
+      line1 = res.value;
+    }
+    const prop = {
+      line1: properCase(line1),
+      line2: properCase([unitType, unitNum].filter(Boolean).join(' ')),
+      city:  properCase(g(r, 'city')),
+      state: g(r, 'state').toUpperCase(),
+      zip:   cleanZip(g(r, 'zip')),
+    };
+
+    // sort keys
+    const hnRaw = g(r, 'houseNumber') || (addrRaw.match(/^\s*(\d+)/) || [])[1] || '';
+    const hn = parseInt(String(hnRaw).replace(/\D/g,''), 10);
+    let streetKey = mapping.street >= 0
+      ? (g(r, 'street') + ' ' + g(r, 'streetSuffix')).trim()
+      : prop.line1.replace(/^\s*\d+[A-Za-z]?(-\d+[A-Za-z]?)?\s+/, '');
+    if (isShielded) streetKey = '';
+    const keys = {_street: streetKey.toUpperCase(), _num: isNaN(hn) ? Infinity : hn, _unit: unitNum};
+
+    const o1 = buildOwner(r, 1), o2 = buildOwner(r, 2);
+    const base = Object.assign({groups:'Leads', fileTag:''}, prop, keys);
+    const mkRow = (o, tag, alt) => Object.assign({}, base, {
+      first:o.first, last:o.last, full:o.full, email:o.email,
+      p1:o.phones[0], p2:o.phones[1], p3:o.phones[2], tag, alt, _tag:tag
+    });
+    out.push(mkRow(o1, 'Owner 1', o2.hasData ? o2.full : ''));
+    if (o2.hasData){ twoOwner++; out.push(mkRow(o2, 'Owner 2', o1.full)); }
+  });
+
+  // business / entity name fallback (after Alternate Owner is set)
+  out.forEach(row => {
+    if (!row.first && row.full){ row.first = row.full; row.full = ''; fallbacks++; }
+  });
+
+  // sort: street, house number (numeric), unit, owner tag; stable
+  out.sort((a, b) => {
+    if (!a._street && b._street) return 1;
+    if (a._street && !b._street) return -1;
+    return collator.compare(a._street, b._street)
+      || (a._num === b._num ? 0 : (a._num < b._num ? -1 : 1))
+      || collator.compare(a._unit, b._unit)
+      || (a._tag < b._tag ? -1 : a._tag > b._tag ? 1 : 0);
+  });
+
+  /* ---------- validation ---------- */
+  const checks = [];
+  const chk = (status, title, detail, examples) => checks.push({status, title, detail, examples: examples || []});
+  const who = r => (r.first + ' ' + r.last).trim() || r.line1 || '(blank)';
+  const sample = (arr, fmt) => arr.slice(0, 5).map(fmt);
+
+  const o1n = out.filter(r => r.tag === 'Owner 1').length;
+  const o2n = out.filter(r => r.tag === 'Owner 2').length;
+  const expected = included + twoOwner;
+  chk(out.length === expected ? 'pass' : 'flag', 'Row count',
+    `${out.length.toLocaleString()} output rows = ${included.toLocaleString()} source rows + ${twoOwner.toLocaleString()} with Owner 2 data` + (excluded ? ` (${excluded} SHIELDED rows excluded)` : ''));
+  chk('info', 'Owner split', `${o1n.toLocaleString()} Owner 1 rows, ${o2n.toLocaleString()} Owner 2 rows`);
+
+  const badPhones = [];
+  out.forEach(r => ['p1','p2','p3'].forEach(k => { if (r[k] && !/^\d{3}-\d{3}-\d{4}$/.test(r[k])) badPhones.push({r, v:r[k]}); }));
+  chk(badPhones.length ? 'flag' : 'pass', 'Phone format',
+    badPhones.length ? `${badPhones.length} phone value(s) are not ###-###-####. Digits were kept as extracted.` : 'Every phone is ###-###-####',
+    sample(badPhones, x => `${x.v} (${who(x.r)})`));
+
+  const badEmails = out.filter(r => r.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email));
+  chk(badEmails.length ? 'flag' : 'pass', 'Email format',
+    badEmails.length ? `${badEmails.length} email(s) look malformed` : 'Every email looks valid',
+    sample(badEmails, r => `${r.email} (${who(r)})`));
+
+  const blankFirst = out.filter(r => !r.first);
+  chk(blankFirst.length ? 'flag' : 'pass', 'Blank First Name',
+    blankFirst.length ? `${blankFirst.length} row(s) have no First Name (no name data at all for that owner)` : 'No blank First Names',
+    sample(blankFirst, r => `${r.tag} at ${r.line1 || '(no address)'}`));
+  const blankLast = out.filter(r => !r.last);
+  chk('info', 'Blank Last Name', `${blankLast.length} row(s) have no Last Name. Entity/business owners are expected here.`);
+
+  chk('info', 'Entity name fallbacks', `${fallbacks} row(s) had Full Name moved into First Name (business or LLC owners)`);
+
+  const badStates = out.filter(r => !/^[A-Z]{2}$/.test(r.state));
+  chk(badStates.length ? 'flag' : 'pass', 'State format',
+    badStates.length ? `${badStates.length} row(s) where State is not 2 uppercase letters` : 'Every State is 2 uppercase letters',
+    sample(badStates, r => `"${r.state}" at ${r.line1}`));
+  const badZips = out.filter(r => !/^\d{5}$/.test(r.zip));
+  const fourDigit = badZips.filter(r => /^\d{4}$/.test(r.zip)).length;
+  chk(badZips.length ? 'flag' : 'pass', 'ZIP format',
+    badZips.length ? `${badZips.length} row(s) where ZIP is not 5 digits` + (fourDigit ? `. ${fourDigit} are 4 digits, likely a leading zero lost in Excel.` : '') : 'Every ZIP is 5 digits',
+    sample(badZips, r => `"${r.zip}" at ${r.line1}`));
+
+  const groupsOk = out.every(r => r.groups === 'Leads');
+  const fileTagOk = out.every(r => r.fileTag === '');
+  chk(groupsOk && fileTagOk ? 'pass' : 'flag', 'Groups and File Tag', 'Groups is "Leads" on every row, File Tag is blank on every row');
+
+  const altFilled = out.filter(r => r.alt).length;
+  chk(altFilled === twoOwner * 2 ? 'pass' : 'flag', 'Alternate Owner',
+    `${altFilled} rows filled, expected ${twoOwner * 2} (2 x ${twoOwner} two-owner properties)` +
+    (altFilled !== twoOwner * 2 ? '. The gap is co-owners with an email or phone but no name.' : ''));
+
+  const outPhones = out.reduce((n, r) => n + ['p1','p2','p3'].filter(k => r[k]).length, 0);
+  const outEmails = out.filter(r => r.email).length;
+  const carried = outPhones === srcPhones && outEmails === srcEmails;
+  chk(carried ? 'pass' : 'flag', 'Phones and emails carried over',
+    `Phones: ${srcPhones.toLocaleString()} in source (cells with digits), ${outPhones.toLocaleString()} in output. Emails: ${srcEmails.toLocaleString()} in source, ${outEmails.toLocaleString()} in output.`);
+
+  const lenTxt = Object.entries(phoneLens).sort((a,b) => b[1]-a[1]).map(([k,v]) => `${k}: ${v.toLocaleString()}`).join(', ');
+  chk('info', 'Source phone digit lengths', lenTxt || 'No phone values in source');
+
+  const blankLine1 = out.filter(r => !r.line1);
+  const shortLine1 = out.filter(r => r.line1 && r.line1.split(/\s+/).length < 2);
+  chk(blankLine1.length || shortLine1.length ? 'flag' : 'pass', 'Home Address Line 1',
+    `${stripped} unit(s) moved out of Line 1. ${blankLine1.length} blank, ${shortLine1.length} under two words.` +
+    (stripSkipped ? ` ${stripSkipped} strip(s) skipped by the safety check.` : ''),
+    sample(blankLine1.concat(shortLine1), r => `"${r.line1}" (${who(r)})`));
+
+  if (shielded) chk('flag', 'SHIELDED records',
+    opts.excludeShielded ? `${shielded} address-suppressed row(s) found and excluded` : `${shielded} address-suppressed row(s) found and kept in the output`);
+
+  out.forEach(r => { delete r.full; delete r._street; delete r._num; delete r._unit; delete r._tag; });
+
+  return {out, checks, stats:{sourceRows:rows.length, included, excluded, twoOwner, o1n, o2n, outRows:out.length}};
+}
+
+/* =========================================================
+   UI
+   ========================================================= */
+if (typeof document !== 'undefined'){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const S = {fileName:'', headers:[], rows:[], mapping:{}, ragged:0, result:null};
+
+  const drop = $('#drop'), input = $('#file');
+  drop.addEventListener('click', () => input.click());
+  drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); input.click(); } });
+  ['dragenter','dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
+  input.addEventListener('change', () => { if (input.files[0]) loadFile(input.files[0]); input.value = ''; });
+
+  function msg(el, html, cls){ el.innerHTML = html ? `<div class="notice ${cls || ''}">${html}</div>` : ''; }
+
+  function loadFile(file){
+    if (!/\.csv$/i.test(file.name)){
+      msg($('#loadMsg'), `<strong>${esc(file.name)}</strong> is not a CSV. Open it in Excel or Google Sheets and save it as CSV first.`);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const all = parseCSV(reader.result);
+      if (all.length < 2){ msg($('#loadMsg'), 'That file has no data rows.'); return; }
+      const seen = {};
+      S.headers = all[0].map(h => {
+        h = h.trim() || 'Untitled';
+        seen[h] = (seen[h] || 0) + 1;
+        return seen[h] > 1 ? `${h} (${seen[h]})` : h;
+      });
+      S.rows = all.slice(1);
+      S.ragged = S.rows.filter(r => r.length !== S.headers.length).length;
+      S.fileName = file.name;
+      S.mapping = autoMap(S.headers);
+      msg($('#loadMsg'), `Loaded <strong>${esc(file.name)}</strong>`, 'blue');
+      renderStep2();
+    };
+    reader.readAsText(file);
+  }
+
+  function renderStep2(){
+    $('#step3').classList.add('hidden');
+    $('#step2').classList.remove('hidden');
+    $('#runMsg').textContent = '';
+    $('#fileStats').innerHTML = [
+      ['Source rows', S.rows.length], ['Columns', S.headers.length],
+      ['Fields matched', Object.values(S.mapping).filter(v => v >= 0).length + ' / ' + FIELDS.length]
+    ].map(([l, v]) => `<div class="stat"><div class="num">${typeof v === 'number' ? v.toLocaleString() : v}</div><div class="label">${l}</div></div>`).join('');
+    msg($('#loadFlags'), S.ragged ? `<strong>${S.ragged} row(s)</strong> have a different number of cells than the header row. Check the source for stray commas or line breaks.` : '');
+    renderMapping();
+    renderColumns();
+    updateShield();
+    $('#step2').scrollIntoView({behavior:'smooth'});
+  }
+
+  function renderMapping(){
+    const opts = sel => `<option value="-1">Not in file</option>` +
+      S.headers.map((h, i) => `<option value="${i}"${sel === i ? ' selected' : ''}>${esc(h)}</option>`).join('');
+    $('#mapGrid').innerHTML = ['Property','Owner 1','Owner 2'].map(g => `
+      <div class="card"><div class="label">${g}</div>
+        ${FIELDS.filter(f => f.group === g).map(f => `
+          <div class="map-row ${S.mapping[f.key] < 0 ? 'missing' : ''}">
+            <span class="map-field"><span class="dot ${S.mapping[f.key] >= 0 ? 'ok' : ''}"></span>${f.label}${f.required ? ' *' : ''}</span>
+            <select data-key="${f.key}" aria-label="${g} ${f.label}">${opts(S.mapping[f.key])}</select>
+          </div>`).join('')}
+      </div>`).join('');
+    $('#mapGrid').querySelectorAll('select').forEach(s => s.addEventListener('change', () => {
+      S.mapping[s.dataset.key] = +s.value;
+      renderMapping(); renderColumns(); updateShield();
+    }));
+  }
+
+  function renderColumns(){
+    const usedBy = {};
+    FIELDS.forEach(f => { const i = S.mapping[f.key]; if (i >= 0) (usedBy[i] = usedBy[i] || []).push(`${f.group === 'Property' ? '' : f.group + ' '}${f.label}`); });
+    const rowsHtml = S.headers.map((h, i) => {
+      let n = 0, sample = '';
+      for (const r of S.rows){ const v = (r[i] || '').trim(); if (v){ n++; if (!sample) sample = v; } }
+      const use = usedBy[i] ? `<span class="tag">${esc(usedBy[i].join(', '))}</span>` : `<span class="tag off">Not used</span>`;
+      return `<tr><td>${esc(h)}</td><td class="num">${n.toLocaleString()}</td><td>${esc(sample)}</td><td>${use}</td></tr>`;
+    }).join('');
+    $('#colTable').innerHTML = `<table><thead><tr><th>Column</th><th>Non-blank</th><th>Sample value</th><th>Used as</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+    $('#fileStats').children[2].querySelector('.num').textContent = Object.values(S.mapping).filter(v => v >= 0).length + ' / ' + FIELDS.length;
+  }
+
+  function updateShield(){
+    const i = S.mapping.address;
+    const n = i >= 0 ? S.rows.filter(r => /shielded/i.test(r[i] || '')).length : 0;
+    $('#shieldCount').textContent = `(${n} found)`;
+  }
+
+  $('#runBtn').addEventListener('click', () => {
+    const m = S.mapping;
+    if (m.address < 0){ $('#runMsg').textContent = 'Map Property Address first.'; return; }
+    if (m.o1First < 0 && m.o1Last < 0 && m.o1Full < 0){ $('#runMsg').textContent = 'Map at least one Owner 1 name column first.'; return; }
+    $('#runMsg').textContent = '';
+    S.result = processRows(S.headers, S.rows, m, {excludeShielded: $('#optShielded').checked});
+    renderStep3();
+  });
+
+  function renderStep3(){
+    const {out, checks, stats} = S.result;
+    $('#step3').classList.remove('hidden');
+    const cards = [
+      ['Source rows', stats.sourceRows], ['Two-owner properties', stats.twoOwner],
+      ['Owner 1 rows', stats.o1n], ['Owner 2 rows', stats.o2n]
+    ];
+    if (stats.excluded) cards.push(['SHIELDED excluded', stats.excluded]);
+    $('#resultStats').innerHTML =
+      `<div class="stat accent"><div class="num">${stats.outRows.toLocaleString()}</div><div class="label">Output rows</div></div>` +
+      cards.map(([l, v]) => `<div class="stat"><div class="num">${v.toLocaleString()}</div><div class="label">${l}</div></div>`).join('');
+    const order = {flag:0, pass:1, info:2};
+    $('#checks').innerHTML = checks.slice().sort((a,b) => order[a.status] - order[b.status]).map(c => `
+      <div class="check"><span class="badge ${c.status}">${c.status}</span>
+        <div><div class="check-title">${esc(c.title)}</div><div class="check-detail">${esc(c.detail)}</div>
+        ${c.examples.length ? `<div class="examples">${c.examples.map(esc).join('<br>')}</div>` : ''}</div>
+      </div>`).join('');
+    const shown = out.slice(0, 100);
+    $('#previewNote').textContent = out.length > 100 ? `First 100 of ${out.length.toLocaleString()} rows. The download has everything.` : `All ${out.length} rows.`;
+    $('#preview').innerHTML = `<table><thead><tr>${OUT_COLS.map(c => `<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${
+      shown.map(r => `<tr class="${r.tag === 'Owner 2' ? 'o2' : ''}">${OUT_COLS.map(c => `<td>${esc(r[c[1]])}</td>`).join('')}</tr>`).join('')
+    }</tbody></table>`;
+    $('#step3').scrollIntoView({behavior:'smooth'});
+  }
+
+  $('#dlBtn').addEventListener('click', () => {
+    const blob = new Blob(['\uFEFF' + toCSV(S.result.out)], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = S.fileName.replace(/\.csv$/i, '') + '_ScrambledEggs.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  $('#resetBtn').addEventListener('click', () => {
+    Object.assign(S, {fileName:'', headers:[], rows:[], mapping:{}, ragged:0, result:null});
+    $('#step2').classList.add('hidden'); $('#step3').classList.add('hidden');
+    msg($('#loadMsg'), '');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+</script>
+</body>
+</html>
